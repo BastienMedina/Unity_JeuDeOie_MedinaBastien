@@ -9,21 +9,22 @@ public class Dices : MonoBehaviour
     [SerializeField] private int diceMax = 6;
     [SerializeField] private int diceMin = 1;
 
-    void Start()
-    {
-        LaunchDice();
-    }
+    [SerializeField] private PlayerMouvements playerMouvements;
 
-    void LaunchDice()
+    public void LaunchDice()
     {
         int totalResult = 0;
-        for (int i = 0; i < (launchDiceQuantity + 1); i++)
+        for (int i = 0; i < launchDiceQuantity; i++)
         {
             int diceResult = RandomDiceResult();
             totalResult += diceResult;
-            print("Dés n°" + i + ":" + diceResult);
         }
         print(totalResult);
+
+        if(playerMouvements != null)
+        {
+            playerMouvements.MovePlayer(totalResult);
+        }
     }
 
     public int RandomDiceResult()
