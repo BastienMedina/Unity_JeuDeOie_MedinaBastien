@@ -17,7 +17,7 @@ public class SlotManager : MonoBehaviour
     void Awake()
     {
         ancientX = (baseSpawnTransform.position.z - spawnDecal);
-        SpawnAllSlots();
+        LoadAllSlots();
     }
 
     void AddSlot(int id)
@@ -27,6 +27,15 @@ public class SlotManager : MonoBehaviour
             GameObject newSlot = Instantiate(slotPrefab, CalculSlotPos(), baseSpawnTransform.rotation);
             slotCount++;
             slotSave.AddSlotObject(slotCount, newSlot);
+            if(id >= 0)
+            {
+                newSlot.GetComponent<Slot>().slotData = slotSave.slotsData[id];
+            }
+            else
+            {
+                newSlot.GetComponent<Slot>().slotData.id = slotCount;
+                slotSave.AddSlotData( newSlot.GetComponent<Slot>().slotData);
+            }
         }
     }
 
@@ -39,7 +48,7 @@ public class SlotManager : MonoBehaviour
         }
         for (int i = 0; i < maxSlotQuantity; i++)
         {
-            AddSlot(i);
+            AddSlot(-1);
         }
     }
 
@@ -48,5 +57,24 @@ public class SlotManager : MonoBehaviour
         Vector3 Pos = new Vector3(baseSpawnTransform.position.x, baseSpawnTransform.position.y, (ancientX + spawnDecal));
         ancientX = (ancientX + spawnDecal);
         return Pos;
+    }
+
+    public void LoadAllSlots()
+    {
+        if(slotSave.slotsData.Count > 0)
+        {
+            for(int i = 0; i< slotSave.slotsData.Count; i++)
+            {
+                AddSlot(i);
+            }
+            if(slotSave.slotsData.Count < maxSlotQuantity)
+            {
+                SpawnAllSlots();
+            }
+        }
+        else
+        {
+            SpawnAllSlots();
+        }
     }
 }

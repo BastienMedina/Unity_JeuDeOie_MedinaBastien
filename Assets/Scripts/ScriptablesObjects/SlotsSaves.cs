@@ -6,6 +6,8 @@ public class SlotsSaves : ScriptableObject
 {
     private Dictionary<int, GameObject> slots = new Dictionary<int, GameObject>();
 
+    public List<SlotStructSave> slotsData = new List<SlotStructSave>();
+
     public int slotsCount;
 
     public void AddSlotObject(int id, GameObject slot)
@@ -37,5 +39,10 @@ public class SlotsSaves : ScriptableObject
             return slots[id];
         }
         return null;
+    }
+
+    public void AddSlotData(SlotStructSave slotData)
+    {
+        slotsData.Add(slotData);
     }
 }

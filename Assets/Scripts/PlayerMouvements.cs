@@ -1,3 +1,6 @@
+using System.Collections;
+using System.Runtime.CompilerServices;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PlayerMouvements : MonoBehaviour
@@ -6,12 +9,17 @@ public class PlayerMouvements : MonoBehaviour
     [SerializeField] private SlotsSaves saveSlots;
     [SerializeField] private PlayerSaves savePlayer;
     
+    [Header("Mouvement parameter")]
+    [SerializeField] private float moveSpeed = 0.3f;
+
+    private bool onMove = false;
+
     public void MovePlayer(int diceResult)
     {
-        Transform newPos = FindSlotToMove(diceResult);
-        if (newPos != null)
+        if (!onMove)
         {
-            gameObject.transform.position = newPos.position;
+            onMove = true;
+            StartCoroutine(MoveSlotAnim(diceResult));
         }
     }
 
@@ -28,5 +36,20 @@ public class PlayerMouvements : MonoBehaviour
             return saveSlots.GetSlotFromList(slot).transform;
         }
         return null;
+    }
+
+    private IEnumerator MoveSlotAnim(int slotQ)
+    {
+        for(int i = 0; i < slotQ; i++)
+        {
+            Transform newPos = FindSlotToMove(1);
+            if (newPos != null)
+            {
+                gameObject.transform.position = newPos.position;
+            }
+            yield return new WaitForSeconds(moveSpeed);
+        }
+        saveSlots.GetSlotFromList(savePlayer.GetCurrentSlot()).GetComponent<Slot>().ApplySlotEffect();
+        onMove = false;
     }
 }
